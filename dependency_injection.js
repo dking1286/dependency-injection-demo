@@ -1,8 +1,8 @@
-export const get = (url) => {
+export function get(url) {
   return getTestable(url, new XMLHttpRequest())
 }
 
-export const getTestable = (url, httpRequest) => {
+export function getTestable(url, httpRequest) {
   return new Promise((resolve, reject) => {
     httpRequest.onload = onHttpResponse(resolve, reject)
     httpRequest.open('GET', url)
