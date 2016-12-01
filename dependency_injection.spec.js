@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
 
-import { onHttpResponse, getTestable } from './dependency_injection'
+import { onHttpResponse, get } from './dependency_injection'
 
 describe('onHttpResponse', function () {
   let resolve;
@@ -13,16 +13,24 @@ describe('onHttpResponse', function () {
   })
 
   it('should invoke resolve with the response text when the status is 200', function () {
-    const handler = onHttpResponse(resolve, reject)
-    handler({ status: 200, responseText: 'Hi' })
+    const handler = onHttpResponse(resolve, reject, {
+      status: 200,
+      responseText: 'Hi'  
+    })
+      
+    handler({ fakeEventObject: 'that does nothing' })
     
     expect(resolve.calledWith('Hi')).to.be.true
     expect(reject.called).to.be.false
   })
 
   it('should invoke reject if the status is not 200', function () {
-    const handler = onHttpResponse(resolve, reject)
-    handler({ status: 404, responseText: 'Nope' })
+    const handler = onHttpResponse(resolve, reject, {
+      status: 404,
+      responseText: ""
+    })
+      
+    handler({ fakeEventObject: 'that does nothing' })
     
     expect(reject.calledWith(sinon.match({
       message: 'Status code was 404, not 200'
@@ -38,7 +46,7 @@ describe('get', function () {
       send: sinon.spy()
     }
 
-    getTestable('hello_world', fakeHttpRequest)
+    get('hello_world', fakeHttpRequest)
 
     expect(fakeHttpRequest.open.calledWith('GET', 'hello_world'))
       .to.be.true
